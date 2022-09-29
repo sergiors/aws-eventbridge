@@ -1,0 +1,37 @@
+service: aws-eventbridge
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: python3.9
+  region: sa-east-1
+  logRetentionInDays: 7
+  layers:
+    - !Ref PythonRequirementsLambdaLayer
+
+functions:
+  hello:
+    handler: handler.lambda_handler
+    events:
+      - eventBridge:
+          pattern:
+            detail:
+              status: [PAID]
+
+package:
+  individually: true
+  patterns:
+    - "!package-lock.json"
+    - "!poetry.lock"
+    - "!node_modules/**"
+    - "!.mypy_cache/**"
+
+plugins:
+  - serverless-offline
+  - serverless-python-requirements
+
+custom:
+  pythonRequirements:
+    layer:
+      compatibleRuntimes:
+        - python3.9
