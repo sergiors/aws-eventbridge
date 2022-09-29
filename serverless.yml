@@ -8,8 +8,19 @@ provider:
   logRetentionInDays: 7
   layers:
     - !Ref PythonRequirementsLambdaLayer
+  environment:
+    LOG_LEVEL: DEBUG
+    POWERTOOLS_LOGGER_SAMPLE_RATE: 0.1
+    POWERTOOLS_LOGGER_LOG_EVENT: true
 
 functions:
+  apigwHello:
+    handler: apigw.lambda_handler
+    events:
+      - httpApi:
+          path: /
+          method: get
+
   hello:
     handler: handler.lambda_handler
     events:
