@@ -20,6 +20,9 @@ functions:
       - httpApi:
           path: /
           method: get
+      - httpApi:
+          path: /
+          method: post
 
   hello:
     handler: handler.lambda_handler
