@@ -31,7 +31,7 @@ functions:
       - eventBridge:
           pattern:
             detail:
-              status: [PAID]
+              status: [CREATING]
 
 package:
   individually: true

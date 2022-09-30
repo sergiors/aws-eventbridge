@@ -1,3 +1,6 @@
+import json
+
+import boto3
 import requests
 import shortuuid
 from aws_lambda_powertools import Logger, Tracer
@@ -13,6 +16,22 @@ from data_classes.user import User
 tracer = Tracer()
 logger = Logger()
 app = APIGatewayHttpResolver()
+
+events = boto3.client('events')
+
+
+def put_event(event: dict, detail_type: str, *, event_client):
+    logger.info(
+        event_client.put_events(
+            Entries=[
+                {
+                    'Source': 'digital.saladeaula',
+                    'DetailType': detail_type,
+                    'Detail': json.dumps(event),
+                },
+            ]
+        )
+    )
 
 
 @app.get('/')
@@ -32,6 +51,7 @@ def create_user():
     except ValidationError as exc:
         raise BadRequestError(exc.errors())
     else:
+        put_event(user.dict(), 'created_user', event_client=events)
         return user.dict()
 
 
