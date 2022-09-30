@@ -35,7 +35,9 @@ functions:
           method: post
 
   hello:
-    handler: handler.lambda_handler
+    handler:
+      - handler.lambda_handler
+      - welcome_email.lambda_handler
     events:
       - eventBridge:
           pattern:
