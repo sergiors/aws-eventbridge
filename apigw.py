@@ -24,17 +24,17 @@ events = boto3.client('events')
 def put_event(event: dict, detail_type: str, source: str, *, event_client):
     try:
         event_client.put_events(
-                Entries=[
-                    {
-                        'Source': source,
-                        'DetailType': detail_type,
-                        'Detail': json.dumps(event),
-                    },
-                ]
-            )
+            Entries=[
+                {
+                    'Source': source,
+                    'DetailType': detail_type,
+                    'Detail': json.dumps(event),
+                },
+            ]
         )
     except ClientError:
         pass
+
 
 @app.get('/')
 @tracer.capture_method
