@@ -38,6 +38,8 @@ functions:
     events:
       - eventBridge:
           pattern:
+            detail-type:
+              - User Created
             detail:
               status: [CREATING]
 

@@ -20,12 +20,13 @@ app = APIGatewayHttpResolver()
 events = boto3.client('events')
 
 
-def put_event(event: dict, detail_type: str, *, event_client):
+def put_event(event: dict, detail_type: str, source: str, *, event_client):
+
     logger.info(
         event_client.put_events(
             Entries=[
                 {
-                    'Source': 'digital.saladeaula',
+                    'Source': source,
                     'DetailType': detail_type,
                     'Detail': json.dumps(event),
                 },
@@ -51,7 +52,12 @@ def create_user():
     except ValidationError as exc:
         raise BadRequestError(exc.errors())
     else:
-        put_event(user.dict(), 'created_user', event_client=events)
+        put_event(
+            user.dict(),
+            source='apigw',
+            detail_type='User Created',
+            event_client=events,
+        )
         return user.dict()
 
 
