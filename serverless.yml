@@ -13,6 +13,14 @@ provider:
     LOG_LEVEL: DEBUG
     POWERTOOLS_LOGGER_SAMPLE_RATE: 0.1
     POWERTOOLS_LOGGER_LOG_EVENT: true
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - events:PutEvents
+          Resource:
+            - "arn:aws:events:sa-east-1:*:event-bus/default"
 
 functions:
   apigwHello:
