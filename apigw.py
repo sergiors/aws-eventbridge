@@ -8,6 +8,7 @@ from aws_lambda_powertools.event_handler import APIGatewayHttpResolver
 from aws_lambda_powertools.event_handler.exceptions import BadRequestError
 from aws_lambda_powertools.logging import correlation_paths
 from aws_lambda_powertools.utilities.typing import LambdaContext
+from botocore.exceptions import ClientError
 from pydantic import ValidationError
 from requests import Response
 
@@ -21,19 +22,19 @@ events = boto3.client('events')
 
 
 def put_event(event: dict, detail_type: str, source: str, *, event_client):
-
-    logger.info(
+    try:
         event_client.put_events(
-            Entries=[
-                {
-                    'Source': source,
-                    'DetailType': detail_type,
-                    'Detail': json.dumps(event),
-                },
-            ]
+                Entries=[
+                    {
+                        'Source': source,
+                        'DetailType': detail_type,
+                        'Detail': json.dumps(event),
+                    },
+                ]
+            )
         )
-    )
-
+    except ClientError:
+        pass
 
 @app.get('/')
 @tracer.capture_method
